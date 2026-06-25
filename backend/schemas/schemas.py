@@ -5,7 +5,7 @@ class TaskCreate(BaseModel):
     title: str
     content: Optional[str]
     is_done: bool
-    
+
     class Config:
         json_schema_extra = {
             "example": {
@@ -15,12 +15,13 @@ class TaskCreate(BaseModel):
             }
         }
 
+
 class TaskResponse(BaseModel):
     id: int
     title: str
     content: Optional[str]
     is_done: bool
-    
+
     class Config:
         from_attributes = True
         json_schema_extra = {
@@ -31,12 +32,13 @@ class TaskResponse(BaseModel):
                 "is_done": True,
             }
         }
-        
+
+
 class Task(BaseModel):
     title: str
     content: Optional[str]
     is_done: bool
-    
+
     class Config:
         from_attributes = True
         json_schema_extra = {
