@@ -1,90 +1,71 @@
-# Task Manager API
+# Task Manager App
 
-A production-ready FastAPI service for managing tasks with CRUD operations, SQLAlchemy persistence, and OpenAPI-based documentation.
+A full-stack task manager built with FastAPI for the backend and React + Vite for the frontend.
 
 ## Overview
 
-This application exposes a REST API for creating, retrieving, updating, and deleting tasks. It is designed to be easy to run locally, simple to extend, and suitable for deployment behind a reverse proxy or container runtime.
+This project lets you create, view, update, complete, and delete tasks through a simple web interface. The backend exposes a REST API, and the frontend communicates with it using configurable API URLs.
 
 ## Features
 
 - Create, read, update, and delete tasks
-- Pydantic-based request and response validation
-- SQLAlchemy ORM integration
-- Automatic database table creation on startup
-- Interactive API docs via Swagger UI and ReDoc
-- CORS middleware support for frontend integration
+- Mark tasks as complete or active
+- Filter tasks by status
+- Persistent storage with SQLAlchemy
+- Interactive API documentation with Swagger UI and ReDoc
+- Frontend settings bar to switch the backend base URL
 
 ## Tech Stack
 
-- Python 3.10+
-- FastAPI
-- SQLAlchemy
-- Pydantic
-- Uvicorn
-- python-dotenv
+- Backend: FastAPI, SQLAlchemy, Pydantic, Uvicorn, python-dotenv
+- Frontend: React, Vite, CSS Modules, Lucide icons
 
 ## Project Structure
 
 ```text
 backend/
-  main.py                 # FastAPI application entrypoint
-  core/config.py          # Application settings
-  database/database.py    # SQLAlchemy engine and session factory
-  model/models.py         # ORM models
-  routers/tasks_router.py # API routes
-  schemas/schemas.py      # Request/response schemas
+  main.py                  # FastAPI app entrypoint
+  core/config.py           # Application configuration
+  database/database.py     # SQLAlchemy engine and session factory
+  model/models.py          # ORM models
+  routers/tasks_router.py  # Task API routes
+  schemas/schemas.py       # Pydantic schemas
   services/todo_services.py # Business logic
+
+frontend/
+  src/                     # React application source
+  package.json             # Frontend dependencies and scripts
 ```
 
 ## Prerequisites
 
-- Python 3.10 or newer
+- Python 3.10+
+- Node.js 18+
+- npm
 - pip
-- A database URL supported by SQLAlchemy (SQLite is used by default for local development)
 
-## Installation
+## Backend Setup
 
-1. Clone the repository and change into the project directory.
-2. Create and activate a virtual environment:
+1. Create and activate a virtual environment:
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-3. Install dependencies:
+2. Install Python dependencies:
 
 ```bash
 pip install fastapi uvicorn sqlalchemy python-dotenv
 ```
 
-4. Create an environment file:
-
-```bash
-copy .env
-```
-
-## Configuration
-
-Set the required environment variables in the `.env` file.
-
-Example:
+3. Create a `.env` file in the project root with a database URL:
 
 ```env
 DATABASE_URL=sqlite:///./task_manager.db
 ```
 
-Recommended production settings:
-
-- Use a managed database such as PostgreSQL or MySQL
-- Set strict CORS origins instead of allowing all origins
-- Keep secrets and connection strings out of source control
-- Use environment-specific configuration for development, staging, and production
-
-## Running the Application
-
-Start the development server:
+4. Start the backend:
 
 ```bash
 uvicorn backend.main:app --reload --port 8000
@@ -92,33 +73,51 @@ uvicorn backend.main:app --reload --port 8000
 
 The API will be available at:
 
-- API root: http://localhost:8000/
-- Swagger UI: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
+- http://localhost:8000/
+- http://localhost:8000/docs
+- http://localhost:8000/redoc
+
+## Frontend Setup
+
+1. Install frontend dependencies:
+
+```bash
+cd frontend
+npm install
+```
+
+2. Start the development server:
+
+```bash
+npm run dev
+```
+
+3. Open http://localhost:5173 in your browser.
+
+4. In the app, use the settings bar to point the frontend at the backend, for example:
+
+```text
+http://localhost:8000
+```
 
 ## API Reference
 
-Base URL: `/api/v1`
+Base URL: /api/v1
 
-### Health Check
+### Health
 
-- `GET /`
-- Returns a simple status message.
+- GET /
+  - Returns a simple status message.
 
 ### Tasks
 
-- `GET /api/v1/tasks/`
-  - Returns all tasks.
-- `GET /api/v1/tasks/{id}`
-  - Returns a single task by ID.
-- `POST /api/v1/tasks/create-task`
-  - Creates a new task.
-- `PUT /api/v1/tasks/update-task/{id}`
-  - Updates an existing task.
-- `DELETE /api/v1/tasks/delete-task/{id}`
-  - Deletes a task by ID.
+- GET /api/v1/tasks/
+- GET /api/v1/tasks/{id}
+- POST /api/v1/tasks/create-task
+- PUT /api/v1/tasks/update-task/{id}
+- DELETE /api/v1/tasks/delete-task/{id}
 
-### Example Create Task Request
+Example create request:
 
 ```json
 {
@@ -128,49 +127,8 @@ Base URL: `/api/v1`
 }
 ```
 
-### Example Response
+## Notes
 
-```json
-{
-  "detail": "task added successfuly"
-}
-```
-
-## Error Handling
-
-The API returns standard HTTP exceptions for common failure cases:
-
-- `400 Bad Request` for invalid input or missing resources
-- `404`-style behavior is surfaced through the service layer with descriptive messages
-
-## Production Deployment Notes
-
-For production deployment:
-
-1. Replace wildcard CORS settings with explicit trusted origins.
-2. Use a production-grade database instead of SQLite.
-3. Run the app with a process manager such as Gunicorn or Supervisor.
-4. Serve behind Nginx or a similar reverse proxy if needed.
-5. Enable logging and monitoring for uptime and error tracking.
-6. Configure HTTPS and secure headers.
-
-Example production start command:
-
-```bash
-gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.main:app
-```
-
-## Security Notes
-
-- Do not commit `.env` files to version control.
-- Restrict API access using authentication and authorization if this service is exposed publicly.
-- Validate and sanitize inputs before persistence.
-- Review CORS and dependency versions regularly.
-
-## Future Improvements
-
-- Adding authentication and role-based access control
-- Adding pagination and filtering for task lists
-- Adding unit and integration tests
-- Adding Docker support for containerized deployment
-- Adding database migrations with Alembic
+- The backend creates database tables automatically on startup.
+- PostgreSQL is used by default for local development.
+- For production, replace the permissive CORS settings with explicit trusted origins and use a stronger database backend.
