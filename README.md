@@ -62,7 +62,7 @@ pip install fastapi uvicorn sqlalchemy python-dotenv
 3. Create a `.env` file in the project root with a database URL:
 
 ```env
-DATABASE_URL=sqlite:///./task_manager.db
+DATABASE_URL=posgresql://user:password@localhost:5432/database
 ```
 
 4. Start the backend:
